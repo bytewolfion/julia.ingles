@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inglês para Julia - Material Didático Interativo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.2em;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .nav-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+
+        .nav-item.active {
+            border-color: #48bb78;
+            background: rgba(72, 187, 120, 0.1);
+        }
+
+        .nav-item h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .nav-item p {
+            color: #718096;
+            font-size: 0.9em;
+        }
+
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .lesson-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .lesson-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .lesson-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .vocab-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .vocab-item:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .vocab-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: block;
+        }
+
+        .vocab-word {
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+
+        .vocab-pronunciation {
+            color: #718096;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .exercise-container {
+            background: #f0fff4;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #68d391;
+        }
+
+        .exercise-title {
+            color: #2f855a;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #2f855a;
+            border: 2px solid #68d391;
+        }
+
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #c53030;
+            border: 2px solid #fc8181;
+        }
+
+        .audio-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .audio-btn:hover {
+            background: #3182ce;
+            transform: scale(1.1);
+        }
+
+        .character {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ffd89b, #19547b);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .nav-menu {
+                grid-template-columns: 1fr;
+            }
+            
+            .lesson-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vocabulary-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="character">🌟</div>
+            <h1>Inglês para Julia</h1>
+            <p>Vamos aprender inglês de forma divertida e interativa!</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText">Progresso: 0%</p>
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="showSection('basico')">
+                <h3>🌱 Básico</h3>
+                <p>Saudações, números, cores e vocabulário essencial</p>
+            </div>
+            <div class="nav-item" onclick="showSection('pre-intermediario')">
+                <h3>🌿 Pré-Intermediário</h3>
+                <p>Rotina, dias da semana, clima e gramática básica</p>
+            </div>
+            <div class="nav-item" onclick="showSection('intermediario')">
+                <h3>🌳 Intermediário</h3>
+                <p>Tempos verbais, conversação e textos simples</p>
+            </div>
+            <div class="nav-item" onclick="showSection('exercicios')">
+                <h3>🎯 Exercícios</h3>
+                <p>Atividades interativas para praticar</p>
+            </div>
+        </div>
+
+        <!-- Seção Básico -->
+        <div id="basico" class="content-section active">
+            <h2>🌱 Nível Básico</h2>
+            <p>Vamos começar com o essencial! Aqui você vai aprender as primeiras palavras em inglês.</p>
+            
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h3>👋 Saudações e Apresentações</h3>
+                    <img src="upload/search_images/rwLfdBflI7q8.jpg" alt="Saudações" class="lesson-image">
+                    <p>Aprenda a cumprimentar e se apresentar em inglês!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('hello')">
+                            <div class="vocab-word">Hello</div>
+                            <div class="vocab-pronunciation">/həˈloʊ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('hi')">
+                            <div class="vocab-word">Hi</div>
+                            <div class="vocab-pronunciation">/haɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('good-morning')">
+                            <div class="vocab-word">Good morning</div>
+                            <div class="vocab-pronunciation">/ɡʊd ˈmɔrnɪŋ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('good-afternoon')">
+                            <div class="vocab-word">Good afternoon</div>
+                            <div class="vocab-pronunciation">/ɡʊd ˌæftərˈnun/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('good-evening')">
+                            <div class="vocab-word">Good evening</div>
+                            <div class="vocab-pronunciation">/ɡʊd ˈivnɪŋ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('goodbye')">
+                            <div class="vocab-word">Goodbye</div>
+                            <div class="vocab-pronunciation">/ɡʊdˈbaɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Frases Úteis</div>
+                        <p><strong>What's your name?</strong> - Qual é o seu nome?</p>
+                        <p><strong>My name is Julia.</strong> - Meu nome é Julia.</p>
+                        <p><strong>How are you?</strong> - Como você está?</p>
+                        <p><strong>I'm fine, thank you.</strong> - Estou bem, obrigada.</p>
+                        <p><strong>Nice to meet you!</strong> - Prazer em conhecê-la!</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🔢 Números 1-20</h3>
+                    <img src="upload/search_images/Pw8VCChYi6BW.jpg" alt="Números" class="lesson-image">
+                    <p>Vamos contar em inglês!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('one')">
+                            <div class="vocab-word">1 - One</div>
+                            <div class="vocab-pronunciation">/wʌn/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('two')">
+                            <div class="vocab-word">2 - Two</div>
+                            <div class="vocab-pronunciation">/tu/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('three')">
+                            <div class="vocab-word">3 - Three</div>
+                            <div class="vocab-pronunciation">/θri/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('four')">
+                            <div class="vocab-word">4 - Four</div>
+                            <div class="vocab-pronunciation">/fɔr/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('five')">
+                            <div class="vocab-word">5 - Five</div>
+                            <div class="vocab-pronunciation">/faɪv/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('six')">
+                            <div class="vocab-word">6 - Six</div>
+                            <div class="vocab-pronunciation">/sɪks/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('seven')">
+                            <div class="vocab-word">7 - Seven</div>
+                            <div class="vocab-pronunciation">/ˈsɛvən/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('eight')">
+                            <div class="vocab-word">8 - Eight</div>
+                            <div class="vocab-pronunciation">/eɪt/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('nine')">
+                            <div class="vocab-word">9 - Nine</div>
+                            <div class="vocab-pronunciation">/naɪn/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('ten')">
+                            <div class="vocab-word">10 - Ten</div>
+                            <div class="vocab-pronunciation">/tɛn/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Números 11-20</div>
+                        <p><strong>11 - Eleven</strong> /ɪˈlɛvən/</p>
+                        <p><strong>12 - Twelve</strong> /twɛlv/</p>
+                        <p><strong>13 - Thirteen</strong> /ˌθɜrˈtin/</p>
+                        <p><strong>14 - Fourteen</strong> /ˌfɔrˈtin/</p>
+                        <p><strong>15 - Fifteen</strong> /ˌfɪfˈtin/</p>
+                        <p><strong>16 - Sixteen</strong> /ˌsɪksˈtin/</p>
+                        <p><strong>17 - Seventeen</strong> /ˌsɛvənˈtin/</p>
+                        <p><strong>18 - Eighteen</strong> /ˌeɪˈtin/</p>
+                        <p><strong>19 - Nineteen</strong> /ˌnaɪnˈtin/</p>
+                        <p><strong>20 - Twenty</strong> /ˈtwɛnti/</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🎨 Cores</h3>
+                    <img src="upload/search_images/lWl0Jo4PEgiE.jpg" alt="Cores" class="lesson-image">
+                    <p>Vamos aprender as cores em inglês!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('red')" style="border-color: red;">
+                            <div class="vocab-word">Red</div>
+                            <div class="vocab-pronunciation">/rɛd/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('blue')" style="border-color: blue;">
+                            <div class="vocab-word">Blue</div>
+                            <div class="vocab-pronunciation">/blu/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('yellow')" style="border-color: yellow;">
+                            <div class="vocab-word">Yellow</div>
+                            <div class="vocab-pronunciation">/ˈjɛloʊ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('green')" style="border-color: green;">
+                            <div class="vocab-word">Green</div>
+                            <div class="vocab-pronunciation">/ɡrin/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('orange')" style="border-color: orange;">
+                            <div class="vocab-word">Orange</div>
+                            <div class="vocab-pronunciation">/ˈɔrɪndʒ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('purple')" style="border-color: purple;">
+                            <div class="vocab-word">Purple</div>
+                            <div class="vocab-pronunciation">/ˈpɜrpəl/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('pink')" style="border-color: pink;">
+                            <div class="vocab-word">Pink</div>
+                            <div class="vocab-pronunciation">/pɪŋk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('black')" style="border-color: black;">
+                            <div class="vocab-word">Black</div>
+                            <div class="vocab-pronunciation">/blæk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('white')" style="border-color: gray;">
+                            <div class="vocab-word">White</div>
+                            <div class="vocab-pronunciation">/waɪt/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('brown')" style="border-color: brown;">
+                            <div class="vocab-word">Brown</div>
+                            <div class="vocab-pronunciation">/braʊn/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Frases com Cores</div>
+                        <p><strong>What color is this?</strong> - Que cor é esta?</p>
+                        <p><strong>This is red.</strong> - Esta é vermelha.</p>
+                        <p><strong>I like blue.</strong> - Eu gosto de azul.</p>
+                        <p><strong>My favorite color is green.</strong> - Minha cor favorita é verde.</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🐾 Animais</h3>
+                    <img src="upload/search_images/W2ayhMu42iP7.jpg" alt="Animais" class="lesson-image">
+                    <p>Conheça os animais em inglês!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('cat')">
+                            <div class="vocab-word">Cat 🐱</div>
+                            <div class="vocab-pronunciation">/kæt/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('dog')">
+                            <div class="vocab-word">Dog 🐶</div>
+                            <div class="vocab-pronunciation">/dɔɡ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('bird')">
+                            <div class="vocab-word">Bird 🐦</div>
+                            <div class="vocab-pronunciation">/bɜrd/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('fish')">
+                            <div class="vocab-word">Fish 🐟</div>
+                            <div class="vocab-pronunciation">/fɪʃ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('rabbit')">
+                            <div class="vocab-word">Rabbit 🐰</div>
+                            <div class="vocab-pronunciation">/ˈræbɪt/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('horse')">
+                            <div class="vocab-word">Horse 🐴</div>
+                            <div class="vocab-pronunciation">/hɔrs/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('cow')">
+                            <div class="vocab-word">Cow 🐄</div>
+                            <div class="vocab-pronunciation">/kaʊ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('pig')">
+                            <div class="vocab-word">Pig 🐷</div>
+                            <div class="vocab-pronunciation">/pɪɡ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('sheep')">
+                            <div class="vocab-word">Sheep 🐑</div>
+                            <div class="vocab-pronunciation">/ʃip/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('duck')">
+                            <div class="vocab-word">Duck 🦆</div>
+                            <div class="vocab-pronunciation">/dʌk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Frases com Animais</div>
+                        <p><strong>I have a cat.</strong> - Eu tenho um gato.</p>
+                        <p><strong>The dog is big.</strong> - O cachorro é grande.</p>
+                        <p><strong>Birds can fly.</strong> - Os pássaros podem voar.</p>
+                        <p><strong>Fish live in water.</strong> - Os peixes vivem na água.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Pré-Intermediário -->
+        <div id="pre-intermediario" class="content-section">
+            <h2>🌿 Nível Pré-Intermediário</h2>
+            <p>Agora vamos expandir seu vocabulário e aprender gramática básica!</p>
+            
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h3>👨‍👩‍👧‍👦 Família</h3>
+                    <img src="upload/search_images/7nOJqEE4NvVN.jpg" alt="Família" class="lesson-image">
+                    <p>Aprenda sobre os membros da família!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('mother')">
+                            <div class="vocab-word">Mother / Mom</div>
+                            <div class="vocab-pronunciation">/ˈmʌðər/ /mɑm/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('father')">
+                            <div class="vocab-word">Father / Dad</div>
+                            <div class="vocab-pronunciation">/ˈfɑðər/ /dæd/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('sister')">
+                            <div class="vocab-word">Sister</div>
+                            <div class="vocab-pronunciation">/ˈsɪstər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('brother')">
+                            <div class="vocab-word">Brother</div>
+                            <div class="vocab-pronunciation">/ˈbrʌðər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('grandmother')">
+                            <div class="vocab-word">Grandmother</div>
+                            <div class="vocab-pronunciation">/ˈɡrænˌmʌðər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('grandfather')">
+                            <div class="vocab-word">Grandfather</div>
+                            <div class="vocab-pronunciation">/ˈɡrænˌfɑðər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Verbo "To Be" (Ser/Estar)</div>
+                        <p><strong>I am</strong> Julia. - Eu sou Julia.</p>
+                        <p><strong>You are</strong> my friend. - Você é minha amiga.</p>
+                        <p><strong>He is</strong> my brother. - Ele é meu irmão.</p>
+                        <p><strong>She is</strong> my sister. - Ela é minha irmã.</p>
+                        <p><strong>We are</strong> a family. - Nós somos uma família.</p>
+                        <p><strong>They are</strong> my parents. - Eles são meus pais.</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🏃‍♀️ Partes do Corpo</h3>
+                    <img src="upload/search_images/BohpfNsA9orr.png" alt="Partes do Corpo" class="lesson-image">
+                    <p>Conheça as partes do corpo humano!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('head')">
+                            <div class="vocab-word">Head</div>
+                            <div class="vocab-pronunciation">/hɛd/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('eyes')">
+                            <div class="vocab-word">Eyes</div>
+                            <div class="vocab-pronunciation">/aɪz/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('nose')">
+                            <div class="vocab-word">Nose</div>
+                            <div class="vocab-pronunciation">/noʊz/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('mouth')">
+                            <div class="vocab-word">Mouth</div>
+                            <div class="vocab-pronunciation">/maʊθ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('arms')">
+                            <div class="vocab-word">Arms</div>
+                            <div class="vocab-pronunciation">/ɑrmz/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('hands')">
+                            <div class="vocab-word">Hands</div>
+                            <div class="vocab-pronunciation">/hændz/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('legs')">
+                            <div class="vocab-word">Legs</div>
+                            <div class="vocab-pronunciation">/lɛɡz/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('feet')">
+                            <div class="vocab-word">Feet</div>
+                            <div class="vocab-pronunciation">/fit/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Frases com Partes do Corpo</div>
+                        <p><strong>I have two eyes.</strong> - Eu tenho dois olhos.</p>
+                        <p><strong>My hands are clean.</strong> - Minhas mãos estão limpas.</p>
+                        <p><strong>She has long hair.</strong> - Ela tem cabelo comprido.</p>
+                        <p><strong>His feet are big.</strong> - Os pés dele são grandes.</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🍎 Comida</h3>
+                    <img src="upload/search_images/v4EEVfYRKhyB.jpg" alt="Comida" class="lesson-image">
+                    <p>Vocabulário de comidas e bebidas!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('apple')">
+                            <div class="vocab-word">Apple 🍎</div>
+                            <div class="vocab-pronunciation">/ˈæpəl/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('banana')">
+                            <div class="vocab-word">Banana 🍌</div>
+                            <div class="vocab-pronunciation">/bəˈnænə/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('bread')">
+                            <div class="vocab-word">Bread 🍞</div>
+                            <div class="vocab-pronunciation">/brɛd/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('milk')">
+                            <div class="vocab-word">Milk 🥛</div>
+                            <div class="vocab-pronunciation">/mɪlk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('water')">
+                            <div class="vocab-word">Water 💧</div>
+                            <div class="vocab-pronunciation">/ˈwɔtər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('pizza')">
+                            <div class="vocab-word">Pizza 🍕</div>
+                            <div class="vocab-pronunciation">/ˈpitsə/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('cake')">
+                            <div class="vocab-word">Cake 🍰</div>
+                            <div class="vocab-pronunciation">/keɪk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('ice-cream')">
+                            <div class="vocab-word">Ice cream 🍦</div>
+                            <div class="vocab-pronunciation">/ˈaɪs krim/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Artigos (A, An, The)</div>
+                        <p><strong>A</strong> apple - Uma maçã (antes de consoante)</p>
+                        <p><strong>An</strong> orange - Uma laranja (antes de vogal)</p>
+                        <p><strong>The</strong> cake - O bolo (específico)</p>
+                        <p><strong>I like</strong> apples. - Eu gosto de maçãs (plural)</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>📚 Objetos da Sala de Aula</h3>
+                    <img src="upload/search_images/EbQkpaEb6JKl.jpg" alt="Objetos da Sala de Aula" class="lesson-image">
+                    <p>Materiais escolares em inglês!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('book')">
+                            <div class="vocab-word">Book 📖</div>
+                            <div class="vocab-pronunciation">/bʊk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('pencil')">
+                            <div class="vocab-word">Pencil ✏️</div>
+                            <div class="vocab-pronunciation">/ˈpɛnsəl/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('pen')">
+                            <div class="vocab-word">Pen 🖊️</div>
+                            <div class="vocab-pronunciation">/pɛn/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('desk')">
+                            <div class="vocab-word">Desk</div>
+                            <div class="vocab-pronunciation">/dɛsk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('chair')">
+                            <div class="vocab-word">Chair</div>
+                            <div class="vocab-pronunciation">/tʃɛr/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('eraser')">
+                            <div class="vocab-word">Eraser</div>
+                            <div class="vocab-pronunciation">/ɪˈreɪsər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('ruler')">
+                            <div class="vocab-word">Ruler 📏</div>
+                            <div class="vocab-pronunciation">/ˈrulər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('backpack')">
+                            <div class="vocab-word">Backpack 🎒</div>
+                            <div class="vocab-pronunciation">/ˈbækˌpæk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Preposições de Lugar</div>
+                        <p><strong>The book is on the desk.</strong> - O livro está sobre a mesa.</p>
+                        <p><strong>The pencil is in the bag.</strong> - O lápis está na bolsa.</p>
+                        <p><strong>The chair is under the desk.</strong> - A cadeira está embaixo da mesa.</p>
+                        <p><strong>The ruler is next to the book.</strong> - A régua está ao lado do livro.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Intermediário -->
+        <div id="intermediario" class="content-section">
+            <h2>🌳 Nível Intermediário</h2>
+            <p>Vamos aprender gramática mais avançada e praticar conversação!</p>
+            
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h3>📅 Dias da Semana e Meses</h3>
+                    <p>Aprenda sobre tempo e datas!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('monday')">
+                            <div class="vocab-word">Monday</div>
+                            <div class="vocab-pronunciation">/ˈmʌndeɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('tuesday')">
+                            <div class="vocab-word">Tuesday</div>
+                            <div class="vocab-pronunciation">/ˈtuzdeɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('wednesday')">
+                            <div class="vocab-word">Wednesday</div>
+                            <div class="vocab-pronunciation">/ˈwɛnzdeɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('thursday')">
+                            <div class="vocab-word">Thursday</div>
+                            <div class="vocab-pronunciation">/ˈθɜrzdeɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('friday')">
+                            <div class="vocab-word">Friday</div>
+                            <div class="vocab-pronunciation">/ˈfraɪdeɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('saturday')">
+                            <div class="vocab-word">Saturday</div>
+                            <div class="vocab-pronunciation">/ˈsætərdeɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('sunday')">
+                            <div class="vocab-word">Sunday</div>
+                            <div class="vocab-pronunciation">/ˈsʌndeɪ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Present Simple (Presente Simples)</div>
+                        <p><strong>I go</strong> to school on Monday. - Eu vou à escola na segunda-feira.</p>
+                        <p><strong>She plays</strong> soccer on Saturday. - Ela joga futebol no sábado.</p>
+                        <p><strong>We study</strong> English every day. - Nós estudamos inglês todos os dias.</p>
+                        <p><strong>They watch</strong> TV on Sunday. - Eles assistem TV no domingo.</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🌤️ Clima e Estações</h3>
+                    <p>Fale sobre o tempo e as estações do ano!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('sunny')">
+                            <div class="vocab-word">Sunny ☀️</div>
+                            <div class="vocab-pronunciation">/ˈsʌni/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('rainy')">
+                            <div class="vocab-word">Rainy 🌧️</div>
+                            <div class="vocab-pronunciation">/ˈreɪni/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('cloudy')">
+                            <div class="vocab-word">Cloudy ☁️</div>
+                            <div class="vocab-pronunciation">/ˈklaʊdi/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('snowy')">
+                            <div class="vocab-word">Snowy ❄️</div>
+                            <div class="vocab-pronunciation">/ˈsnoʊi/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('spring')">
+                            <div class="vocab-word">Spring 🌸</div>
+                            <div class="vocab-pronunciation">/sprɪŋ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('summer')">
+                            <div class="vocab-word">Summer ☀️</div>
+                            <div class="vocab-pronunciation">/ˈsʌmər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('autumn')">
+                            <div class="vocab-word">Autumn 🍂</div>
+                            <div class="vocab-pronunciation">/ˈɔtəm/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('winter')">
+                            <div class="vocab-word">Winter ❄️</div>
+                            <div class="vocab-pronunciation">/ˈwɪntər/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Perguntas com "Wh-"</div>
+                        <p><strong>What</strong> is the weather like? - Como está o tempo?</p>
+                        <p><strong>Where</strong> do you live? - Onde você mora?</p>
+                        <p><strong>When</strong> is your birthday? - Quando é seu aniversário?</p>
+                        <p><strong>Who</strong> is your teacher? - Quem é sua professora?</p>
+                        <p><strong>Why</strong> do you study English? - Por que você estuda inglês?</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🏃‍♀️ Rotina Diária</h3>
+                    <p>Descreva suas atividades do dia a dia!</p>
+                    
+                    <div class="vocabulary-grid">
+                        <div class="vocab-item" onclick="playAudio('wake-up')">
+                            <div class="vocab-word">Wake up</div>
+                            <div class="vocab-pronunciation">/weɪk ʌp/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('brush-teeth')">
+                            <div class="vocab-word">Brush teeth</div>
+                            <div class="vocab-pronunciation">/brʌʃ tiθ/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('eat-breakfast')">
+                            <div class="vocab-word">Eat breakfast</div>
+                            <div class="vocab-pronunciation">/it ˈbrɛkfəst/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('go-to-school')">
+                            <div class="vocab-word">Go to school</div>
+                            <div class="vocab-pronunciation">/ɡoʊ tu skul/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('do-homework')">
+                            <div class="vocab-word">Do homework</div>
+                            <div class="vocab-pronunciation">/du ˈhoʊmˌwɜrk/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('watch-tv')">
+                            <div class="vocab-word">Watch TV</div>
+                            <div class="vocab-pronunciation">/wɑtʃ ˌtiˈvi/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('go-to-bed')">
+                            <div class="vocab-word">Go to bed</div>
+                            <div class="vocab-pronunciation">/ɡoʊ tu bɛd/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                        <div class="vocab-item" onclick="playAudio('play-games')">
+                            <div class="vocab-word">Play games</div>
+                            <div class="vocab-pronunciation">/pleɪ ɡeɪmz/</div>
+                            <button class="audio-btn">🔊</button>
+                        </div>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Present Continuous (Presente Contínuo)</div>
+                        <p><strong>I am eating</strong> breakfast now. - Eu estou tomando café da manhã agora.</p>
+                        <p><strong>She is studying</strong> English. - Ela está estudando inglês.</p>
+                        <p><strong>We are playing</strong> games. - Nós estamos jogando.</p>
+                        <p><strong>They are watching</strong> TV. - Eles estão assistindo TV.</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>💬 Conversação Básica</h3>
+                    <p>Pratique diálogos simples!</p>
+                    
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Diálogo: No Restaurante</div>
+                        <p><strong>Waiter:</strong> Good evening! What would you like to eat?</p>
+                        <p><strong>Julia:</strong> I would like a pizza, please.</p>
+                        <p><strong>Waiter:</strong> What would you like to drink?</p>
+                        <p><strong>Julia:</strong> I would like orange juice, please.</p>
+                        <p><strong>Waiter:</strong> Thank you! Your order will be ready soon.</p>
+                        <p><strong>Julia:</strong> Thank you very much!</p>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Diálogo: Pedindo Informações</div>
+                        <p><strong>Julia:</strong> Excuse me, where is the library?</p>
+                        <p><strong>Person:</strong> It's next to the park.</p>
+                        <p><strong>Julia:</strong> How can I get there?</p>
+                        <p><strong>Person:</strong> Go straight and turn left.</p>
+                        <p><strong>Julia:</strong> Thank you for your help!</p>
+                        <p><strong>Person:</strong> You're welcome!</p>
+                    </div>
+
+                    <div class="exercise-container">
+                        <div class="exercise-title">🎯 Modal Verbs (Verbos Modais)</div>
+                        <p><strong>Can:</strong> I can swim. - Eu sei nadar.</p>
+                        <p><strong>Could:</strong> Could you help me? - Você poderia me ajudar?</p>
+                        <p><strong>Should:</strong> You should study more. - Você deveria estudar mais.</p>
+                        <p><strong>Must:</strong> I must go home. - Eu preciso ir para casa.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Exercícios -->
+        <div id="exercicios" class="content-section">
+            <h2>🎯 Exercícios Interativos</h2>
+            <p>Pratique o que você aprendeu com estes exercícios divertidos!</p>
+            
+            <div class="lesson-grid">
+                <div class="lesson-card">
+                    <h3>🎮 Quiz de Vocabulário</h3>
+                    <div id="quiz-container">
+                        <div id="quiz-question"></div>
+                        <div id="quiz-options"></div>
+                        <div id="quiz-feedback"></div>
+                        <button class="btn" onclick="startQuiz()">Começar Quiz</button>
+                        <button class="btn" onclick="nextQuestion()" id="next-btn" style="display: none;">Próxima Pergunta</button>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🔤 Complete a Frase</h3>
+                    <div id="fill-blank-container">
+                        <div id="fill-blank-question"></div>
+                        <input type="text" id="fill-blank-input" placeholder="Digite sua resposta...">
+                        <button class="btn" onclick="checkFillBlank()">Verificar</button>
+                        <div id="fill-blank-feedback"></div>
+                        <button class="btn" onclick="nextFillBlank()" id="fill-next-btn" style="display: none;">Próxima Frase</button>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🎨 Jogo das Cores</h3>
+                    <div id="color-game-container">
+                        <div id="color-game-instruction">Clique na cor correta!</div>
+                        <div id="color-game-word"></div>
+                        <div id="color-game-options"></div>
+                        <div id="color-game-feedback"></div>
+                        <button class="btn" onclick="startColorGame()">Começar Jogo</button>
+                        <button class="btn" onclick="nextColorQuestion()" id="color-next-btn" style="display: none;">Próxima Cor</button>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3>🔢 Jogo dos Números</h3>
+                    <div id="number-game-container">
+                        <div id="number-game-instruction">Qual número é este?</div>
+                        <div id="number-game-display"></div>
+                        <div id="number-game-options"></div>
+                        <div id="number-game-feedback"></div>
+                        <button class="btn" onclick="startNumberGame()">Começar Jogo</button>
+                        <button class="btn" onclick="nextNumberQuestion()" id="number-next-btn" style="display: none;">Próximo Número</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navegação entre seções
+        function showSection(sectionId) {
+            // Esconder todas as seções
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remover classe active de todos os nav-items
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Mostrar seção selecionada
+            document.getElementById(sectionId).classList.add('active');
+
+            // Adicionar classe active ao nav-item clicado
+            event.target.closest('.nav-item').classList.add('active');
+
+            // Atualizar progresso
+            updateProgress();
+        }
+
+        // Atualizar barra de progresso
+        function updateProgress() {
+            const activeSection = document.querySelector('.content-section.active');
+            let progress = 0;
+
+            switch(activeSection.id) {
+                case 'basico':
+                    progress = 25;
+                    break;
+                case 'pre-intermediario':
+                    progress = 50;
+                    break;
+                case 'intermediario':
+                    progress = 75;
+                    break;
+                case 'exercicios':
+                    progress = 100;
+                    break;
+            }
+
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Progresso: ${progress}%`;
+        }
+
+        // Reprodução de áudio com arquivos reais
+        function playAudio(word) {
+            // Feedback visual
+            if (event && event.target) {
+                const vocabItem = event.target.closest('.vocab-item');
+                if (vocabItem) {
+                    vocabItem.style.backgroundColor = '#e6fffa';
+                    setTimeout(() => {
+                        vocabItem.style.backgroundColor = '';
+                    }, 500);
+                }
+            }
+
+            // Mapear palavras para nomes de arquivos
+            const audioMap = {
+                'hello': 'hello.wav',
+                'hi': 'hi.wav',
+                'good-morning': 'good_morning.wav',
+                'good-afternoon': 'good_afternoon.wav',
+                'good-evening': 'good_evening.wav',
+                'goodbye': 'goodbye.wav',
+                'how-are-you': 'how_are_you.wav',
+                'im-fine-thank-you': 'im_fine_thank_you.wav',
+                'my-name-is-julia': 'my_name_is_julia.wav',
+                'nice-to-meet-you': 'nice_to_meet_you.wav',
+                'whats-your-name': 'whats_your_name.wav',
+                'one': 'one.wav',
+                'two': 'two.wav',
+                'three': 'three.wav',
+                'four': 'four.wav',
+                'five': 'five.wav',
+                'six': 'six.wav',
+                'seven': 'seven.wav',
+                'eight': 'eight.wav',
+                'nine': 'nine.wav',
+                'ten': 'ten.wav',
+                'red': 'red.wav',
+                'blue': 'blue.wav',
+                'green': 'green.wav',
+                'yellow': 'yellow.wav',
+                'black': 'black.wav',
+                'white': 'white.wav',
+                'brown': 'brown.wav',
+                'pink': 'pink.wav',
+                'purple': 'purple.wav',
+                'orange': 'orange.wav',
+                'cat': 'cat.wav',
+                'dog': 'dog.wav',
+                'bird': 'bird.wav',
+                'fish': 'fish.wav',
+                'rabbit': 'rabbit.wav',
+                'horse': 'horse.wav',
+                'cow': 'cow.wav',
+                'pig': 'pig.wav',
+                'sheep': 'sheep.wav',
+                'duck': 'duck.wav',
+                'mother': 'mother__mom.wav',
+                'father': 'father__dad.wav',
+                'sister': 'sister.wav',
+                'brother': 'brother.wav',
+                'grandmother': 'grandmother.wav',
+                'grandfather': 'grandfather.wav',
+                'head': 'head.wav',
+                'eyes': 'eyes.wav',
+                'nose': 'nose.wav',
+                'mouth': 'mouth.wav',
+                'arms': 'arms.wav',
+                'hands': 'hands.wav',
+                'legs': 'legs.wav',
+                'feet': 'feet.wav',
+                'apple': 'apple.wav',
+                'banana': 'banana.wav',
+                'bread': 'bread.wav',
+                'milk': 'milk.wav',
+                'water': 'water.wav',
+                'pizza': 'pizza.wav',
+                'cake': 'cake.wav',
+                'ice-cream': 'ice_cream.wav',
+                'book': 'book.wav',
+                'pencil': 'pencil.wav',
+                'pen': 'pen.wav',
+                'desk': 'desk.wav',
+                'chair': 'chair.wav',
+                'eraser': 'eraser.wav',
+                'ruler': 'ruler.wav',
+                'backpack': 'backpack.wav',
+                'monday': 'monday.wav',
+                'tuesday': 'tuesday.wav',
+                'wednesday': 'wednesday.wav',
+                'thursday': 'thursday.wav',
+                'friday': 'friday.wav',
+                'saturday': 'saturday.wav',
+                'sunday': 'sunday.wav',
+                'sunny': 'sunny.wav',
+                'rainy': 'rainy.wav',
+                'cloudy': 'cloudy.wav',
+                'snowy': 'snowy.wav',
+                'spring': 'spring.wav',
+                'summer': 'summer.wav',
+                'autumn': 'autumn.wav',
+                'winter': 'winter.wav',
+                'wake-up': 'wake_up.wav',
+                'brush-teeth': 'brush_teeth.wav',
+                'eat-breakfast': 'eat_breakfast.wav',
+                'go-to-school': 'go_to_school.wav',
+                'do-homework': 'do_homework.wav',
+                'watch-tv': 'watch_tv.wav',
+                'go-to-bed': 'go_to_bed.wav',
+                'play-games': 'play_games.wav'
+            };
+
+            // Reproduzir áudio
+            const audioFile = audioMap[word];
+            if (audioFile) {
+                const audio = new Audio(`audio/${audioFile}`);
+                audio.play().catch(error => {
+                    console.log('Erro ao reproduzir áudio:', error);
+                    // Fallback para Web Speech API se o arquivo não estiver disponível
+                    const utterance = new SpeechSynthesisUtterance(word.replace(/-/g, ' '));
+                    utterance.lang = 'en-US';
+                    speechSynthesis.speak(utterance);
+                });
+            } else {
+                // Fallback para Web Speech API
+                const utterance = new SpeechSynthesisUtterance(word.replace(/-/g, ' '));
+                utterance.lang = 'en-US';
+                speechSynthesis.speak(utterance);
+            }
+            
+            console.log(`Playing audio for: ${word}`);
+        }
+
+        // Quiz de Vocabulário
+        let quizQuestions = [
+            {
+                question: "Como se diz 'Olá' em inglês?",
+                options: ["Hello", "Goodbye", "Thank you", "Please"],
+                correct: 0
+            },
+            {
+                question: "Qual é a cor 'azul' em inglês?",
+                options: ["Red", "Green", "Blue", "Yellow"],
+                correct: 2
+            },
+            {
+                question: "Como se diz 'gato' em inglês?",
+                options: ["Dog", "Cat", "Bird", "Fish"],
+                correct: 1
+            },
+            {
+                question: "Qual número é 'five'?",
+                options: ["3", "4", "5", "6"],
+                correct: 2
+            },
+            {
+                question: "Como se diz 'mãe' em inglês?",
+                options: ["Father", "Sister", "Brother", "Mother"],
+                correct: 3
+            }
+        ];
+
+        let currentQuizQuestion = 0;
+        let quizScore = 0;
+
+        function startQuiz() {
+            currentQuizQuestion = 0;
+            quizScore = 0;
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            if (currentQuizQuestion >= quizQuestions.length) {
+                document.getElementById('quiz-question').innerHTML = `Quiz concluído! Você acertou ${quizScore} de ${quizQuestions.length} perguntas! 🎉`;
+                document.getElementById('quiz-options').innerHTML = '';
+                document.getElementById('next-btn').style.display = 'none';
+                return;
+            }
+
+            const question = quizQuestions[currentQuizQuestion];
+            document.getElementById('quiz-question').innerHTML = question.question;
+            
+            let optionsHTML = '';
+            question.options.forEach((option, index) => {
+                optionsHTML += `<button class="btn" onclick="checkQuizAnswer(${index})">${option}</button>`;
+            });
+            
+            document.getElementById('quiz-options').innerHTML = optionsHTML;
+            document.getElementById('quiz-feedback').innerHTML = '';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function checkQuizAnswer(selectedIndex) {
+            const question = quizQuestions[currentQuizQuestion];
+            const feedback = document.getElementById('quiz-feedback');
+            
+            if (selectedIndex === question.correct) {
+                feedback.innerHTML = '<div class="feedback correct">Correto! Muito bem! 🎉</div>';
+                quizScore++;
+            } else {
+                feedback.innerHTML = `<div class="feedback incorrect">Incorreto. A resposta correta é: ${question.options[question.correct]}</div>`;
+            }
+            
+            // Desabilitar botões de opção
+            const optionButtons = document.querySelectorAll('#quiz-options .btn');
+            optionButtons.forEach(btn => btn.disabled = true);
+            
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuizQuestion++;
+            showQuizQuestion();
+        }
+
+        // Exercício de Completar Frases
+        let fillBlankQuestions = [
+            {
+                question: "I ___ Julia. (am/is/are)",
+                answer: "am"
+            },
+            {
+                question: "The cat ___ black. (am/is/are)",
+                answer: "is"
+            },
+            {
+                question: "We ___ students. (am/is/are)",
+                answer: "are"
+            },
+            {
+                question: "She ___ my sister. (am/is/are)",
+                answer: "is"
+            },
+            {
+                question: "They ___ happy. (am/is/are)",
+                answer: "are"
+            }
+        ];
+
+        let currentFillBlank = 0;
+
+        function startFillBlank() {
+            currentFillBlank = 0;
+            showFillBlankQuestion();
+        }
+
+        function showFillBlankQuestion() {
+            if (currentFillBlank >= fillBlankQuestions.length) {
+                document.getElementById('fill-blank-question').innerHTML = 'Exercício concluído! Parabéns! 🎉';
+                document.getElementById('fill-blank-input').style.display = 'none';
+                document.querySelector('#fill-blank-container .btn').style.display = 'none';
+                return;
+            }
+
+            const question = fillBlankQuestions[currentFillBlank];
+            document.getElementById('fill-blank-question').innerHTML = question.question;
+            document.getElementById('fill-blank-input').value = '';
+            document.getElementById('fill-blank-feedback').innerHTML = '';
+            document.getElementById('fill-next-btn').style.display = 'none';
+        }
+
+        function checkFillBlank() {
+            const userAnswer = document.getElementById('fill-blank-input').value.toLowerCase().trim();
+            const correctAnswer = fillBlankQuestions[currentFillBlank].answer.toLowerCase();
+            const feedback = document.getElementById('fill-blank-feedback');
+            
+            if (userAnswer === correctAnswer) {
+                feedback.innerHTML = '<div class="feedback correct">Correto! Muito bem! 🎉</div>';
+            } else {
+                feedback.innerHTML = `<div class="feedback incorrect">Incorreto. A resposta correta é: ${correctAnswer}</div>`;
+            }
+            
+            document.getElementById('fill-next-btn').style.display = 'inline-block';
+        }
+
+        function nextFillBlank() {
+            currentFillBlank++;
+            showFillBlankQuestion();
+        }
+
+        // Jogo das Cores
+        let colorQuestions = [
+            { word: "Red", color: "#ff0000" },
+            { word: "Blue", color: "#0000ff" },
+            { word: "Green", color: "#008000" },
+            { word: "Yellow", color: "#ffff00" },
+            { word: "Purple", color: "#800080" },
+            { word: "Orange", color: "#ffa500" }
+        ];
+
+        let currentColorQuestion = 0;
+
+        function startColorGame() {
+            currentColorQuestion = 0;
+            showColorQuestion();
+        }
+
+        function showColorQuestion() {
+            if (currentColorQuestion >= colorQuestions.length) {
+                document.getElementById('color-game-word').innerHTML = 'Jogo concluído! Você conhece bem as cores! 🌈';
+                document.getElementById('color-game-options').innerHTML = '';
+                return;
+            }
+
+            const question = colorQuestions[currentColorQuestion];
+            document.getElementById('color-game-word').innerHTML = `Clique na cor: <strong>${question.word}</strong>`;
+            
+            // Criar opções de cores embaralhadas
+            let colors = [...colorQuestions];
+            colors = colors.sort(() => Math.random() - 0.5).slice(0, 4);
+            
+            // Garantir que a cor correta esteja nas opções
+            if (!colors.find(c => c.word === question.word)) {
+                colors[0] = question;
+            }
+            
+            let optionsHTML = '';
+            colors.forEach((color, index) => {
+                optionsHTML += `<button class="btn" style="background-color: ${color.color}; width: 60px; height: 60px; margin: 5px;" onclick="checkColorAnswer('${color.word}', '${question.word}')"></button>`;
+            });
+            
+            document.getElementById('color-game-options').innerHTML = optionsHTML;
+            document.getElementById('color-game-feedback').innerHTML = '';
+            document.getElementById('color-next-btn').style.display = 'none';
+        }
+
+        function checkColorAnswer(selectedColor, correctColor) {
+            const feedback = document.getElementById('color-game-feedback');
+            
+            if (selectedColor === correctColor) {
+                feedback.innerHTML = '<div class="feedback correct">Correto! Você escolheu a cor certa! 🎨</div>';
+            } else {
+                feedback.innerHTML = `<div class="feedback incorrect">Incorreto. A cor correta era ${correctColor}</div>`;
+            }
+            
+            // Desabilitar botões
+            const colorButtons = document.querySelectorAll('#color-game-options .btn');
+            colorButtons.forEach(btn => btn.disabled = true);
+            
+            document.getElementById('color-next-btn').style.display = 'inline-block';
+        }
+
+        function nextColorQuestion() {
+            currentColorQuestion++;
+            showColorQuestion();
+        }
+
+        // Jogo dos Números
+        let numberQuestions = [
+            { number: 1, word: "One" },
+            { number: 2, word: "Two" },
+            { number: 3, word: "Three" },
+            { number: 4, word: "Four" },
+            { number: 5, word: "Five" },
+            { number: 6, word: "Six" },
+            { number: 7, word: "Seven" },
+            { number: 8, word: "Eight" },
+            { number: 9, word: "Nine" },
+            { number: 10, word: "Ten" }
+        ];
+
+        let currentNumberQuestion = 0;
+
+        function startNumberGame() {
+            currentNumberQuestion = 0;
+            showNumberQuestion();
+        }
+
+        function showNumberQuestion() {
+            if (currentNumberQuestion >= numberQuestions.length) {
+                document.getElementById('number-game-display').innerHTML = 'Jogo concluído! Você domina os números! 🔢';
+                document.getElementById('number-game-options').innerHTML = '';
+                return;
+            }
+
+            const question = numberQuestions[currentNumberQuestion];
+            document.getElementById('number-game-display').innerHTML = `<div style="font-size: 4em; color: #667eea; font-weight: bold;">${question.number}</div>`;
+            
+            // Criar opções embaralhadas
+            let options = [...numberQuestions];
+            options = options.sort(() => Math.random() - 0.5).slice(0, 4);
+            
+            // Garantir que a resposta correta esteja nas opções
+            if (!options.find(o => o.number === question.number)) {
+                options[0] = question;
+            }
+            
+            // Embaralhar novamente
+            options = options.sort(() => Math.random() - 0.5);
+            
+            let optionsHTML = '';
+            options.forEach((option, index) => {
+                optionsHTML += `<button class="btn" onclick="checkNumberAnswer('${option.word}', '${question.word}')">${option.word}</button>`;
+            });
+            
+            document.getElementById('number-game-options').innerHTML = optionsHTML;
+            document.getElementById('number-game-feedback').innerHTML = '';
+            document.getElementById('number-next-btn').style.display = 'none';
+        }
+
+        function checkNumberAnswer(selectedWord, correctWord) {
+            const feedback = document.getElementById('number-game-feedback');
+            
+            if (selectedWord === correctWord) {
+                feedback.innerHTML = '<div class="feedback correct">Correto! Você acertou o número! 🎯</div>';
+            } else {
+                feedback.innerHTML = `<div class="feedback incorrect">Incorreto. A resposta correta era ${correctWord}</div>`;
+            }
+            
+            // Desabilitar botões
+            const numberButtons = document.querySelectorAll('#number-game-options .btn');
+            numberButtons.forEach(btn => btn.disabled = true);
+            
+            document.getElementById('number-next-btn').style.display = 'inline-block';
+        }
+
+        function nextNumberQuestion() {
+            currentNumberQuestion++;
+            showNumberQuestion();
+        }
+
+        // Inicializar exercícios quando a seção for carregada
+        document.addEventListener('DOMContentLoaded', function() {
+            startFillBlank();
+        });
+    </script>
+</body>
+</html>
+
